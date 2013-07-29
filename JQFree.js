@@ -244,19 +244,3 @@
 	window.JQF = window.$ = _JQF;
 	window.core = _core;
 })(window)
-/*
-var li = document.createElement("li");
-console.log(li.__proto__===HTMLLIElement.prototype);
-console.log(HTMLLIElement.prototype.__proto__===HTMLElement.prototype);
-console.log(typeof HTMLLIElement);
-console.log(typeof HTMLElement);
-console.log(typeof li);
-console.log(li instanceof HTMLLIElement);
-console.log(li instanceof HTMLElement);
-console.log(li instanceof Object);
-
-console.log(li.constructor);//HTMLLIElement()
-console.log(HTMLLIElement.constructor);//Object()
-console.log(HTMLLIElement.prototype.constructor);//HTMLLIElement()
-console.log(HTMLElement.constructor);//Object()
-console.log(HTMLLIElement.__proto__===Object.prototype);//true*/
