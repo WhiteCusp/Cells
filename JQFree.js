@@ -49,74 +49,119 @@
 
 		addEvent: function(type, fn) {
 			if (this[0].addEventListener) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].addEventListener(type,fn,false);
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].addEventListener(type,fn,false);
+					}
 				}
 			} else if (this[0].attachEvent) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].addachEvent("on"+type,fn);
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].addachEvent("on"+type,fn);
+					}
 				}
 			} else {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i]["on" + type] = fn;
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i]["on" + type] = fn;
+					}
 				}
 			}
+
+			return $.fn.addEvent.call(this, type, fn);
 		},
 
 		removeEvent: function(type, fn) {
 			if (this[0].removeEventListener) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].removeEventListener(type,fn,false);
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].removeEventListener(type,fn,false);
+					}
 				}
 			} else if (this[0].attachEvent) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].detachEvent("on"+type,fn);
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].detachEvent("on"+type,fn);
+					}
 				}
 			} else {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i]["on" + type] = null;
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i]["on" + type] = null;
+					}
 				}
 			}
+
+			return $.fn.removeEvent.call(this, type, fn);
 		},
 
 		addClass: function(clsName) {
-			try {
-				if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-					throw new Error("Not a correct className format!");
+			if (this[0].classList) {
+				$.fn.addClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+					this[0].classList.add(clsName);
 				}
-			} catch (e) {
-				console.log(e.message);
-				return;
+			} else {
+				$.fn.addClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+					var origClass = this[0].className;
+					var reg = new RegExp("\\b"+clsName+"\\b");
+					if (!reg.test(origClass)) {
+						this[0].className += (origClass.length==0 ? clsName : " " + clsName);
+					} 
+				}
 			}
 
-			if (this[0].classList) {
-				this[0].classList.add(clsName);
-			} else {
-				var origClass = this[0].className;
-				var reg = new RegExp("\\b"+clsName+"\\b");
-				if (!reg.test(origClass)) {
-					this[0].className += (origClass.length==0 ? clsName : " " + clsName);
-				} 
-			}
+			return $.fn.addClass.call(this, clsName);
 		},
 
 		removeClass: function(clsName) {
-			try {
-				if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-					throw new Error("Not a correct className format!");
-				}
-			} catch (e) {
-				console.log(e.message);
-				return;
-			}
 			if (this[0].classList) {
-				this[0].classList.remove(clsName);
+				$.fn.removeClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+
+					this[0].classList.remove(clsName);
+				}
 			} else {
-				var origClass = this[0].className;
-				var reg = new RegExp("\\s"+clsName+"\\b\|\\b" + clsName + "\\s");
-				origClass = origClass.replace(reg,"");
-				this[0].className = origClass.replace(/\s{2,}/g," ");
+				$.fn.removeClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+
+					var origClass = this[0].className;
+					var reg = new RegExp("\\s"+clsName+"\\b\|\\b" + clsName + "\\s");
+					origClass = origClass.replace(reg,"");
+					this[0].className = origClass.replace(/\s{2,}/g," ");
+				}
 			}
+
+			return $.fn.removeClass.call(this, clsName);
 		},
 
 		attr: function(name, value) {
@@ -169,16 +214,22 @@
 		},
 
 		createXHR: function() {
-			if (typeof XMLHttpRequest != "undefined") {
-				return new XMLHttpRequest();
+			if (typeof XMLHttpRequest !== "undefined") {
+				$.createXHR = function() {
+					return new XMLHttpRequest();
+				}
 			} else {
-				var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
-				for (var i = xmlVer.length - 1; i >= 0; i--) {
-					try {
-						return new ActiveXObject(xmlVer[i]);
-					} catch(e) {}
-				};
+				$.createXHR = function() {
+					var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
+					for (var i = xmlVer.length - 1; i >= 0; i--) {
+						try {
+							return new ActiveXObject(xmlVer[i]);
+						} catch(e) {}
+					};
+				}
 			}
+
+			return $.createXHR();
 		},
 
 		ajax: function(type, url, callback,param) {
