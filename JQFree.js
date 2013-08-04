@@ -268,6 +268,14 @@
 			return function() {
 				fn.apply(context, arguments);
 			}
+		},
+
+		trim: function(str) {
+			if (String.prototype.trim) {
+				return str.trim();
+			};
+			
+			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 		}
 	});
 
