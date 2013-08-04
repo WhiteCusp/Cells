@@ -1,12 +1,17 @@
 (function(window){
-	var _JQF = $ = function(str) {
-		return new _JQF.fn.init(str);
+	var _JQF = $ = function(selector) {
+		return new _JQF.fn.init(selector);
 	};
 
 	_JQF.fn = _JQF.prototype = {
-		init: function(str) {
-			var elem = document.querySelectorAll(str);
-			_JQF.merge(this,elem);
+		init: function(selector) {
+			if (typeof selector === "string") {
+				var elem = document.querySelectorAll(selector);
+				$.merge(this,elem);
+			} else if (selector.nodeType) {
+				this[0] = selector;
+				this.length = 1;
+			};
 		},
 
 		append: function(ele) {
@@ -16,6 +21,8 @@
 				for (var i = 0,len = ele.length; i < len; i++) {
 					this[0].appendChild(ele[i]);
 				}
+			} else if(ele.nodeType) {
+				this[0].appendChild(ele);
 			}
 			return this;
 		},
@@ -27,6 +34,8 @@
 				for (var i = 0,len = ele.length; i < len; i++) {
 					this[0].insertBefore(ele[i],this[0].firstChild);
 				}
+			} else if(ele.nodeType) {
+				this[0].insertBefore(ele,this[0].firstChild);
 			}
 			return this;
 		},
@@ -40,145 +49,228 @@
 
 		addEvent: function(type, fn) {
 			if (this[0].addEventListener) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].addEventListener(type,fn,false);
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].addEventListener(type,fn,false);
+					}
 				}
 			} else if (this[0].attachEvent) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].addachEvent("on"+type,fn);
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].attachEvent("on"+type,fn);
+					}
 				}
 			} else {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i]["on" + type] = fn;
+				$.fn.addEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i]["on" + type] = fn;
+					}
 				}
 			}
+
+			return $.fn.addEvent.call(this, type, fn);
 		},
 
 		removeEvent: function(type, fn) {
 			if (this[0].removeEventListener) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].removeEventListener(type,fn,false);
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].removeEventListener(type,fn,false);
+					}
 				}
 			} else if (this[0].attachEvent) {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i].detachEvent("on"+type,fn);
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i].detachEvent("on"+type,fn);
+					}
 				}
 			} else {
-				for (var i = 0,len = this.length; i < len; i++) {
-					this[i]["on" + type] = null;
+				$.fn.removeEvent = function(type, fn) {
+					for (var i = 0,len = this.length; i < len; i++) {
+						this[i]["on" + type] = null;
+					}
 				}
 			}
+
+			return $.fn.removeEvent.call(this, type, fn);
 		},
 
 		addClass: function(clsName) {
-			try {
-				if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-					throw new Error("Not a correct className format!");
-				}
-			} catch (e) {
-				console.log(e.message);
-				return;
-			}
-			
 			if (this[0].classList) {
-				this[0].classList.add(clsName);
+				$.fn.addClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+					this[0].classList.add(clsName);
+				}
 			} else {
-				var origClass = this[0].className;
-				var reg = new RegExp("\\b"+clsName+"\\b");
-				if (!reg.test(origClass)) {
-					this[0].className += (origClass.length==0 ? clsName : " " + clsName);
-				} 
+				$.fn.addClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+					var origClass = this[0].className;
+					var reg = new RegExp("\\b"+clsName+"\\b");
+					if (!reg.test(origClass)) {
+						this[0].className += (origClass.length==0 ? clsName : " " + clsName);
+					} 
+				}
 			}
+
+			return $.fn.addClass.call(this, clsName);
 		},
 
 		removeClass: function(clsName) {
-			try {
-				if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-					throw new Error("Not a correct className format!");
-				}
-			} catch (e) {
-				console.log(e.message);
-				return;
-			}
 			if (this[0].classList) {
-				this[0].classList.remove(clsName);
+				$.fn.removeClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+
+					this[0].classList.remove(clsName);
+				}
 			} else {
-				var origClass = this[0].className;
-				var reg = new RegExp("\\s"+clsName+"\\b\|\\b" + clsName + "\\s");
-				origClass = origClass.replace(reg,"");
-				this[0].className = origClass.replace(/\s{2,}/g," ");
+				$.fn.removeClass = function(clsName) {
+					try {
+						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
+							throw new Error("Not a correct className format!");
+						}
+					} catch (e) {
+						console.log(e.message);
+						return;
+					}
+
+					var origClass = this[0].className;
+					var reg = new RegExp("\\s"+clsName+"\\b\|\\b" + clsName + "\\s");
+					origClass = origClass.replace(reg,"");
+					this[0].className = origClass.replace(/\s{2,}/g," ");
+				}
+			}
+
+			return $.fn.removeClass.call(this, clsName);
+		},
+
+		attr: function(name, value) {
+			this[0].setAttribute(name, value);
+		},
+
+		html: function(str) {
+			this[0].innerHTML = str;
+		},
+
+		data: function(name, value) {
+			if (!name) {return;};
+			if (arguments.length === 1) {
+				return this[0].dataset[name];
+			} else {
+				this[0].dataset[name] = value;
 			}
 		}
 
 	};
 	_JQF.fn.init.prototype = _JQF.fn;
 
-	_JQF.merge = function( first, second ) {
-		var l = second.length,
-			i = first.length || 0,
-			j = 0;
-
-		if ( typeof l === "number" ) {
-			for ( ; j < l; j++ ) {
-				first[ i++ ] = second[ j ];
-			}
-		} else {
-			while ( second[j] !== undefined ) {
-				first[ i++ ] = second[ j++ ];
-			}
-		}
-
-		first.length = i;
-
-		return first;
-	};
-
-	_JQF.createXHR = function() {
-		if (typeof XMLHttpRequest != "undefined") {
-			return new XMLHttpRequest();
-		} else {
-			var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
-			for (var i = xmlVer.length - 1; i >= 0; i--) {
-				try {
-					return new ActiveXObject(xmlVer[i]);
-				} catch(e) {}
+	_JQF.extend = function(obj1, obj2) {
+		for(prop in obj2) {
+			if (obj2.hasOwnProperty(prop)) {
+				obj1[prop] = obj2[prop];
 			};
 		}
-	};
+	}
 
-	_JQF.ajax = function(type, url, callback,param) {
-		var xhr = _JQF.createXHR(),
-			encodeParams = [];
-		for (var i = param.length - 1; i >= 0; i--) {
-			encodeParams.push(encodeURIComponent(param[i].name) + "=" + encodeURIComponent(param[i].value));
-		}
-		encodeParams = encodeParams.join("&");
+	$.extend(_JQF, {
+		merge: function( first, second ) {
+			var l = second.length,
+				i = first.length || 0,
+				j = 0;
 
-		if (type == "POST") {
-			xhr.open(type, url, true);
-			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		} else {
-			url += url.indexOf("?")==-1 ? ("?" + encodeParams) : ("&" + encodeParams);
-			xhr.open(type, url, true);
-			encodeParams = null;
-		}
-
-		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4) {
-				if (xhr.status == 200) {
-					callback(xhr.responseText);
+			if ( typeof l === "number" ) {
+				for ( ; j < l; j++ ) {
+					first[ i++ ] = second[ j ];
 				}
-			};
-		};
-		xhr.send(encodeParams);
-	};
+			} else {
+				while ( second[j] !== undefined ) {
+					first[ i++ ] = second[ j++ ];
+				}
+			}
 
-	_JQF.bind = function(fn, context) {
-		return function() {
-			fn.apply(context, arguments);
+			first.length = i;
+
+			return first;
+		},
+
+		createXHR: function() {
+			if (typeof XMLHttpRequest !== "undefined") {
+				$.createXHR = function() {
+					return new XMLHttpRequest();
+				}
+			} else {
+				$.createXHR = function() {
+					var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
+					for (var i = xmlVer.length - 1; i >= 0; i--) {
+						try {
+							return new ActiveXObject(xmlVer[i]);
+						} catch(e) {}
+					};
+				}
+			}
+
+			return $.createXHR();
+		},
+
+		ajax: function(type, url, callback,param) {
+			var xhr = _JQF.createXHR(),
+				encodeParams = [];
+			if (param) {
+				for (var i = param.length - 1; i >= 0; i--) {
+					encodeParams.push(encodeURIComponent(param[i].name) + "=" + encodeURIComponent(param[i].value));
+				}
+				encodeParams = encodeParams.join("&");
+			};
+
+			if (type == "POST") {
+				xhr.open(type, url, true);
+				xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			} else {
+				if (param) {
+					url += url.indexOf("?")==-1 ? ("?" + encodeParams) : ("&" + encodeParams);
+				} else {
+					encodeParams = null;
+				}
+				xhr.open(type, url, true);
+			}
+
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == 4) {
+					if (xhr.status == 200) {
+						callback(xhr.responseText);
+					}
+				};
+			};
+			xhr.send(encodeParams);
+		},
+
+		bind: function(fn, context) {
+			return function() {
+				fn.apply(context, arguments);
+			}
 		}
-	};
-	
+	});
+
 	var _core = {};
 	_core.Browser = new function() {
 		var _regConfig = {
