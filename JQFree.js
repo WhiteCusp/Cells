@@ -276,6 +276,35 @@
 			};
 			
 			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		},
+
+		each: function(obj, iterator, context) {
+			if (obj == null) {return;}
+			var nativeForEach = Array.prototype.forEach;
+			if (nativeForEach && obj.forEach === nativeForEach) {
+				obj.forEach(iterator, context);
+			} else if(obj.length === +obj.length) {
+				for (var i = 0, l = obj.length; i < l; i++) {
+					iterator.call(context, obj[i], i, obj);
+				}
+			} else {
+				for(key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						iterator.call(context, obj[key], key, obj);
+					}
+				}
+			}
+		},
+
+		map: function(obj, iterator, context) {
+			if (obj == null) {return;}
+			var result = [],
+				nativeMap = Array.prototype.map;
+			if (nativeMap && obj.map === nativeMap) {return obj.map(iterator, context)};
+			$.each(obj, function(value, index, list) {
+				result.push(iterator.call(context, value, index, list));
+			});
+			return result;
 		}
 	});
 
