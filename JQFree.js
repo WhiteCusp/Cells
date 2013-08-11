@@ -305,6 +305,25 @@
 				result.push(iterator.call(context, value, index, list));
 			});
 			return result;
+		},
+
+		reduce: function(obj, iterator, memo, context) {
+			if (obj == null) {obj = [];}
+			var initial = arguments.length > 2;
+				nativeReduce = Array.prototype.reduce;
+			if (nativeReduce && obj.reduce === nativeReduce) {
+				if (context) {iterator = $.bind(iterator, context);}
+				return memo ? obj.reduce(iterator, memo) : obj.reduce(iterator);
+			}
+			$.each(obj, function(value, index, list) {
+				if (!initial) {
+					initial = true;
+					memo = value;
+				} else {
+					memo = iterator.call(context, memo, value, index, list);
+				}
+			});
+			return memo;
 		}
 	});
 
