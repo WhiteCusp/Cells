@@ -279,7 +279,7 @@
 		},
 
 		each: function(obj, iterator, context) {
-			if (obj == null) {return;}
+			if (obj === null) {return;}
 			var nativeForEach = Array.prototype.forEach;
 			if (nativeForEach && obj.forEach === nativeForEach) {
 				obj.forEach(iterator, context);
@@ -288,7 +288,7 @@
 					iterator.call(context, obj[i], i, obj);
 				}
 			} else {
-				for(key in obj) {
+				for(var key in obj) {
 					if (obj.hasOwnProperty(key)) {
 						iterator.call(context, obj[key], key, obj);
 					}
@@ -297,10 +297,10 @@
 		},
 
 		map: function(obj, iterator, context) {
-			if (obj == null) {return;}
+			if (obj === null) {return;}
 			var result = [],
 				nativeMap = Array.prototype.map;
-			if (nativeMap && obj.map === nativeMap) {return obj.map(iterator, context)};
+			if (nativeMap && obj.map === nativeMap) {return obj.map(iterator, context);}
 			$.each(obj, function(value, index, list) {
 				result.push(iterator.call(context, value, index, list));
 			});
@@ -308,7 +308,7 @@
 		},
 
 		reduce: function(obj, iterator, memo, context) {
-			if (obj == null) {obj = [];}
+			if (obj === null) {obj = [];}
 			var initial = arguments.length > 2;
 				nativeReduce = Array.prototype.reduce;
 			if (nativeReduce && obj.reduce === nativeReduce) {
@@ -324,6 +324,25 @@
 				}
 			});
 			return memo;
+		},
+
+		loadScript: function(url, callback) {
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			if (script.readyState) {
+				script.onreadystatechange = function() {
+					if (script.readyState == "loaded" || script.readyState == 'complete') {
+						script.onreadystatechange = null;
+						callback();
+					}
+				};
+			} else {
+				script.onload = function() {
+					callback();
+				};
+			}
+			script.src = url;
+			document.getElementsByTagName('head')[0].appendChild(script);
 		}
 	});
 
