@@ -1,10 +1,21 @@
 (function(window) {
-	var nativeForEach = Array.prototype.forEach;
-	var nativeReduce = Array.prototype.reduce;
-	var nativeIsArray = Array.prototype.isArray;
-	var nativeTrim = String.prototype.trim;
-	var nativeMap = Array.prototype.map;
-	var nativeKeys = Object.keys;
+
+	// All **ECMAScript 5** native function implementations that we hope to use
+  // are declared here.
+  var
+    nativeForEach      = ArrayProto.forEach,
+    nativeMap          = ArrayProto.map,
+    nativeReduce       = ArrayProto.reduce,
+    nativeReduceRight  = ArrayProto.reduceRight,
+    nativeFilter       = ArrayProto.filter,
+    nativeEvery        = ArrayProto.every,
+    nativeSome         = ArrayProto.some,
+    nativeIndexOf      = ArrayProto.indexOf,
+    nativeLastIndexOf  = ArrayProto.lastIndexOf,
+    nativeIsArray      = Array.isArray,
+    nativeKeys         = Object.keys,
+    nativeTrim         = String.prototype.trim,
+    nativeBind         = FuncProto.bind;
 
 	var _JQF = $ = function(selector) {
 		return new _JQF.fn.init(selector);
