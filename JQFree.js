@@ -1,4 +1,11 @@
-(function(window){
+(function(window) {
+	var nativeForEach = Array.prototype.forEach;
+	var nativeReduce = Array.prototype.reduce;
+	var nativeIsArray = Array.prototype.isArray;
+	var nativeTrim = String.prototype.trim;
+	var nativeMap = Array.prototype.map;
+	var nativeKeys = Object.keys;
+
 	var _JQF = $ = function(selector) {
 		return new _JQF.fn.init(selector);
 	};
@@ -7,35 +14,35 @@
 		init: function(selector) {
 			if (typeof selector === "string") {
 				var elem = document.querySelectorAll(selector);
-				$.merge(this,elem);
+				$.merge(this, elem);
 			} else if (selector.nodeType) {
 				this[0] = selector;
 				this.length = 1;
-			};
+			}
 		},
 
 		append: function(ele) {
-			if (typeof ele==="string") {
+			if (typeof ele === "string") {
 				this[0].innerHTML += ele;
 			} else if (ele instanceof _JQF) {
-				for (var i = 0,len = ele.length; i < len; i++) {
+				for (var i = 0, len = ele.length; i < len; i++) {
 					this[0].appendChild(ele[i]);
 				}
-			} else if(ele.nodeType) {
+			} else if (ele.nodeType) {
 				this[0].appendChild(ele);
 			}
 			return this;
 		},
 
 		prepend: function(ele) {
-			if (typeof ele==="string") {
+			if (typeof ele === "string") {
 				this[0].innerHTML = ele + this[0].innerHTML;
 			} else if (ele instanceof _JQF) {
-				for (var i = 0,len = ele.length; i < len; i++) {
-					this[0].insertBefore(ele[i],this[0].firstChild);
+				for (var i = 0, len = ele.length; i < len; i++) {
+					this[0].insertBefore(ele[i], this[0].firstChild);
 				}
-			} else if(ele.nodeType) {
-				this[0].insertBefore(ele,this[0].firstChild);
+			} else if (ele.nodeType) {
+				this[0].insertBefore(ele, this[0].firstChild);
 			}
 			return this;
 		},
@@ -50,22 +57,22 @@
 		addEvent: function(type, fn) {
 			if (this[0].addEventListener) {
 				$.fn.addEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
-						this[i].addEventListener(type,fn,false);
+					for (var i = 0, len = this.length; i < len; i++) {
+						this[i].addEventListener(type, fn, false);
 					}
-				}
+				};
 			} else if (this[0].attachEvent) {
 				$.fn.addEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
-						this[i].attachEvent("on"+type,fn);
+					for (var i = 0, len = this.length; i < len; i++) {
+						this[i].attachEvent("on" + type, fn);
 					}
-				}
+				};
 			} else {
 				$.fn.addEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
+					for (var i = 0, len = this.length; i < len; i++) {
 						this[i]["on" + type] = fn;
 					}
-				}
+				};
 			}
 
 			return $.fn.addEvent.call(this, type, fn);
@@ -74,22 +81,22 @@
 		removeEvent: function(type, fn) {
 			if (this[0].removeEventListener) {
 				$.fn.removeEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
-						this[i].removeEventListener(type,fn,false);
+					for (var i = 0, len = this.length; i < len; i++) {
+						this[i].removeEventListener(type, fn, false);
 					}
-				}
+				};
 			} else if (this[0].attachEvent) {
 				$.fn.removeEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
-						this[i].detachEvent("on"+type,fn);
+					for (var i = 0, len = this.length; i < len; i++) {
+						this[i].detachEvent("on" + type, fn);
 					}
-				}
+				};
 			} else {
 				$.fn.removeEvent = function(type, fn) {
-					for (var i = 0,len = this.length; i < len; i++) {
+					for (var i = 0, len = this.length; i < len; i++) {
 						this[i]["on" + type] = null;
 					}
-				}
+				};
 			}
 
 			return $.fn.removeEvent.call(this, type, fn);
@@ -107,7 +114,7 @@
 						return;
 					}
 					this[0].classList.add(clsName);
-				}
+				};
 			} else {
 				$.fn.addClass = function(clsName) {
 					try {
@@ -119,11 +126,11 @@
 						return;
 					}
 					var origClass = this[0].className;
-					var reg = new RegExp("\\b"+clsName+"\\b");
+					var reg = new RegExp("\\b" + clsName + "\\b");
 					if (!reg.test(origClass)) {
-						this[0].className += (origClass.length==0 ? clsName : " " + clsName);
-					} 
-				}
+						this[0].className += (origClass.length == 0 ? clsName : " " + clsName);
+					}
+				};
 			}
 
 			return $.fn.addClass.call(this, clsName);
@@ -142,7 +149,7 @@
 					}
 
 					this[0].classList.remove(clsName);
-				}
+				};
 			} else {
 				$.fn.removeClass = function(clsName) {
 					try {
@@ -155,10 +162,10 @@
 					}
 
 					var origClass = this[0].className;
-					var reg = new RegExp("\\s"+clsName+"\\b\|\\b" + clsName + "\\s");
-					origClass = origClass.replace(reg,"");
-					this[0].className = origClass.replace(/\s{2,}/g," ");
-				}
+					var reg = new RegExp("\\s" + clsName + "\\b\|\\b" + clsName + "\\s");
+					origClass = origClass.replace(reg, "");
+					this[0].className = origClass.replace(/\s{2,}/g, " ");
+				};
 			}
 
 			return $.fn.removeClass.call(this, clsName);
@@ -173,7 +180,9 @@
 		},
 
 		data: function(name, value) {
-			if (!name) {return;};
+			if (!name) {
+				return;
+			}
 			if (arguments.length === 1) {
 				return this[0].dataset[name];
 			} else {
@@ -185,26 +194,26 @@
 	_JQF.fn.init.prototype = _JQF.fn;
 
 	_JQF.extend = function(obj1, obj2) {
-		for(prop in obj2) {
+		for (var prop in obj2) {
 			if (obj2.hasOwnProperty(prop)) {
 				obj1[prop] = obj2[prop];
-			};
+			}
 		}
-	}
+	};
 
 	$.extend(_JQF, {
-		merge: function( first, second ) {
+		merge: function(first, second) {
 			var l = second.length,
 				i = first.length || 0,
 				j = 0;
 
-			if ( typeof l === "number" ) {
-				for ( ; j < l; j++ ) {
-					first[ i++ ] = second[ j ];
+			if (typeof l === "number") {
+				for (; j < l; j++) {
+					first[i++] = second[j];
 				}
 			} else {
-				while ( second[j] !== undefined ) {
-					first[ i++ ] = second[ j++ ];
+				while (second[j] !== undefined) {
+					first[i++] = second[j++];
 				}
 			}
 
@@ -217,22 +226,22 @@
 			if (typeof XMLHttpRequest !== "undefined") {
 				$.createXHR = function() {
 					return new XMLHttpRequest();
-				}
+				};
 			} else {
 				$.createXHR = function() {
 					var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
 					for (var i = xmlVer.length - 1; i >= 0; i--) {
 						try {
 							return new ActiveXObject(xmlVer[i]);
-						} catch(e) {}
-					};
-				}
+						} catch (e) {}
+					}
+				};
 			}
 
 			return $.createXHR();
 		},
 
-		ajax: function(type, url, callback,param) {
+		ajax: function(type, url, callback, param) {
 			var xhr = _JQF.createXHR(),
 				encodeParams = [];
 			if (param) {
@@ -240,14 +249,14 @@
 					encodeParams.push(encodeURIComponent(param[i].name) + "=" + encodeURIComponent(param[i].value));
 				}
 				encodeParams = encodeParams.join("&");
-			};
+			}
 
 			if (type == "POST") {
 				xhr.open(type, url, true);
-				xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			} else {
 				if (param) {
-					url += url.indexOf("?")==-1 ? ("?" + encodeParams) : ("&" + encodeParams);
+					url += url.indexOf("?") == -1 ? ("?" + encodeParams) : ("&" + encodeParams);
 				} else {
 					encodeParams = null;
 				}
@@ -259,7 +268,7 @@
 					if (xhr.status == 200) {
 						callback(xhr.responseText);
 					}
-				};
+				}
 			};
 			xhr.send(encodeParams);
 		},
@@ -267,28 +276,30 @@
 		bind: function(fn, context) {
 			return function() {
 				fn.apply(context, arguments);
-			}
+			};
 		},
 
 		trim: function(str) {
-			if (String.prototype.trim) {
+			if (nativeTrim) {
 				return str.trim();
-			};
-			
+			}
+
 			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 		},
 
+		// function iterator(value, index, arr) {}
 		each: function(obj, iterator, context) {
-			if (obj === null) {return;}
-			var nativeForEach = Array.prototype.forEach;
+			if (obj === null) {
+				return;
+			}
 			if (nativeForEach && obj.forEach === nativeForEach) {
 				obj.forEach(iterator, context);
-			} else if(obj.length === +obj.length) {
+			} else if (obj.length === +obj.length) {
 				for (var i = 0, l = obj.length; i < l; i++) {
 					iterator.call(context, obj[i], i, obj);
 				}
 			} else {
-				for(var key in obj) {
+				for (var key in obj) {
 					if (obj.hasOwnProperty(key)) {
 						iterator.call(context, obj[key], key, obj);
 					}
@@ -296,23 +307,30 @@
 			}
 		},
 
+		// function iterator(value, index, arr) {}
 		map: function(obj, iterator, context) {
-			if (obj === null) {return;}
-			var result = [],
-				nativeMap = Array.prototype.map;
-			if (nativeMap && obj.map === nativeMap) {return obj.map(iterator, context);}
-			$.each(obj, function(value, index, list) {
-				result.push(iterator.call(context, value, index, list));
-			});
-			return result;
+			if (obj === null) {
+				return;
+			}
+			var result = [];
+			
+				$.each(obj, function(value, index, list) {
+					result.push(iterator.call(context, value, index, list));
+				});
+				return result;
+			
 		},
 
 		reduce: function(obj, iterator, memo, context) {
-			if (obj === null) {obj = [];}
+			if (obj === null) {
+				obj = [];
+			}
 			var initial = arguments.length > 2;
-				nativeReduce = Array.prototype.reduce;
+			nativeReduce = Array.prototype.reduce;
 			if (nativeReduce && obj.reduce === nativeReduce) {
-				if (context) {iterator = $.bind(iterator, context);}
+				if (context) {
+					iterator = $.bind(iterator, context);
+				}
 				return memo ? obj.reduce(iterator, memo) : obj.reduce(iterator);
 			}
 			$.each(obj, function(value, index, list) {
@@ -345,6 +363,54 @@
 			document.getElementsByTagName('head')[0].appendChild(script);
 		}
 	});
+	
+	$.keys = nativeKeys || function(obj) {
+		if (obj !== Object(obj)) throw new TypeError('Invalid object');
+		var result = [];
+		for(var prop in obj) {
+			if (obj.hasOwnProperty(prop)) {
+				result.push(prop);
+			}
+		}
+		return result;
+	};
+
+	$.invert = function(obj) {
+		var result = {};
+		var keys = $.keys(obj);
+		$.each(keys, function(key){
+			result[obj[key]] = key;
+		});
+		return result;
+	};
+
+	entityMap = {
+		escape: {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#x27;'
+		}
+	};
+	entityMap.unescape = $.invert(entityMap.escape);
+
+	// Regexes containing the keys and values listed immediately above.
+	var entityRegexes = {
+		escape: new RegExp('[' + $.keys(entityMap.escape).join('') + ']', 'g'),
+		unescape: new RegExp('(' + $.keys(entityMap.unescape).join('|') + ')', 'g')
+	};
+
+	console.log(entityRegexes.unescape);
+	
+	$.each(['escape', 'unescape'], function(method){
+		$[method] = function(string) {
+			var rege = entityRegexes[method];
+			return string.replace(rege, function(match){
+				return entityMap[method][match];
+			});
+		};
+	});
 
 	var _core = {};
 	_core.Browser = new function() {
@@ -369,8 +435,8 @@
 				Reg: /.*(msie) ([\w.]+).*/,
 				Core: "Ms"
 			}
-		}, 
-		_userAgent = navigator.userAgent.toLowerCase();
+		},
+			_userAgent = navigator.userAgent.toLowerCase();
 		this.getDetail = function() {
 			for (var _o in _regConfig) {
 				var _result = _regConfig[_o].Reg.exec(_userAgent);
@@ -410,4 +476,8 @@
 
 	window.JQF = window.$ = _JQF;
 	window.core = _core;
-})(window)
+
+	if ( typeof define === "function" && define.amd ) {
+		define( "JQFree", [], function () { return JQF; } );
+	}
+})(window);
