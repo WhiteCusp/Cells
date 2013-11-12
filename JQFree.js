@@ -2,6 +2,9 @@
 
 	// All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
+
+  var ArrayProto = Array.prototype;
+  var FuncProto = Function.prototype;
   var
     nativeForEach      = ArrayProto.forEach,
     nativeMap          = ArrayProto.map,
@@ -113,6 +116,10 @@
 			return $.fn.removeEvent.call(this, type, fn);
 		},
 
+		hasClass: function(clsName) {
+
+		},
+
 		addClass: function(clsName) {
 			if (this[0].classList) {
 				$.fn.addClass = function(clsName) {
@@ -180,6 +187,10 @@
 			}
 
 			return $.fn.removeClass.call(this, clsName);
+		},
+
+		toggleClass: function(clsName) {
+
 		},
 
 		attr: function(name, value) {
@@ -318,41 +329,91 @@
 			}
 		},
 
-		// function iterator(value, index, arr) {}
-		map: function(obj, iterator, context) {
-			if (obj === null) {
+		/** 返回一个原始数组元素的回调函数返回值的新数组
+		* @param {arr} 进行遍历处理的原始数组。
+		* @param {iterator} 遍历处理的方法
+		* @param {context} 绑定处理方法的上下文
+		* @return {result} 返回的数组 */
+		map: function(arr, iterator, context) {
+			if (arr === null || !$.isArray(arr)) {
 				return;
 			}
-			var result = [];
-			
-				$.each(obj, function(value, index, list) {
-					result.push(iterator.call(context, value, index, list));
-				});
-				return result;
-			
-		},
-
-		reduce: function(obj, iterator, memo, context) {
-			if (obj === null) {
-				obj = [];
+			if (nativeMap && arr.map === nativeMap) {
+				return arr.map(iterator, context);
 			}
-			var initial = arguments.length > 2;
-			nativeReduce = Array.prototype.reduce;
-			if (nativeReduce && obj.reduce === nativeReduce) {
+			var result = [];
+			$.each(arr, function(value, index, list) {
+				result.push(iterator.call(context, value, index, list));
+			});
+			return result;
+		},
+		/** 对数组中的所有元素调用指定的回调函数。 该回调函数的返回值为累积结果，并且此返回值在下一次调用该回调函数时作为参数提供。
+		* @param {arr} 原始数组。
+		* @param {iterator} 遍历处理的方法,iterator(prevValue, currValue, currentIndex, arr)
+		* 	@@param {prevValue} 上一次的累积值。
+		* 	@@param {currValue} 当前数组元素的值。
+		* 	@@param {currentIndex} 当前元素的数字索引。
+		* 	@@param {arr} 当前元素数组。
+		* @param {memo} 起始值
+		* @return {result} 返回的数组 */
+		reduce: function(arr, iterator, initValue, context) {
+			if (arr === null ) {
+				arr = [];
+			}
+			var isInit = arguments.length > 2;
+			if (nativeReduce && arr.reduce === nativeReduce) {
 				if (context) {
 					iterator = $.bind(iterator, context);
 				}
-				return memo ? obj.reduce(iterator, memo) : obj.reduce(iterator);
+				return initValue ? arr.reduce(iterator, initValue) : arr.reduce(iterator);
 			}
-			$.each(obj, function(value, index, list) {
-				if (!initial) {
-					initial = true;
-					memo = value;
+			$.each(arr, function(value, index, list) {
+				if (!isInit) {
+					isInit = true;
+					initValue = value;
 				} else {
-					memo = iterator.call(context, memo, value, index, list);
+					initValue = iterator.call(context, initValue, value, index, list);
 				}
 			});
-			return memo;
+			return initValue;
+		},
+		/** 返回数组中的满足回调函数中指定的条件的元素。
+		* @param {arr} 进行遍历处理的原始数组。
+		* @param {cb} 过滤的方法
+		* @param {context} 绑定处理方法的上下文
+		* @return {result} 返回的数组 */
+		filter: function(arr, cb, context) {
+			if (nativeFilter && nativeFilter === arr.filter) {
+				return arr.filter(cb,context);
+			}
+			var result = [];
+			$.each(arr,function(value,index,array1){
+				if (cb.call(context, value, index, array1)) {
+					result.push(value);
+				}
+			});
+			return result;
+		},
+		/** 确定指定的数组中是否有任一元素在回调函数中返回 true。
+		* @param {arr} 进行遍历处理的原始数组。
+		* @param {cb} 过滤的方法
+		* @param {context} 绑定处理方法的上下文
+		* @return {result} 布尔型，数组中是否有任一元素在回调函数中返回 true，否则返回false
+		*/
+		some: function(arr, cb, context) {
+			if (arr === null || !$.isArray(arr)) {
+				return;
+			}
+			if (nativeSome && arr.some === nativeSome) {
+				return arr.some(cb, context);
+			}
+			var result = false;
+			$.each(arr, function(value) {
+				if (cb.call(context, value)) {
+					result = true;
+				}
+			});
+			return result;
 		},
 
 		loadScript: function(url, callback) {
@@ -411,8 +472,6 @@
 		escape: new RegExp('[' + $.keys(entityMap.escape).join('') + ']', 'g'),
 		unescape: new RegExp('(' + $.keys(entityMap.unescape).join('|') + ')', 'g')
 	};
-
-	console.log(entityRegexes.unescape);
 	
 	$.each(['escape', 'unescape'], function(method){
 		$[method] = function(string) {
@@ -422,6 +481,10 @@
 			});
 		};
 	});
+
+	$.isArray = nativeIsArray || function(obj) {
+		return Object.prototype.toString.call(obj) == '[object Array]';
+	};
 
 	var _core = {};
 	_core.Browser = new function() {

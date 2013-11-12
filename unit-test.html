@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript" src="./JQFree.js"></script>
+	<script type="text/javascript">
+		var obj = {id:1, name:'Kris', age:'18'};
+		var arr = [1,2,3,4,5];
+		var str = "Kris Zeng";
+
+		function assert(result, fn, arg) {
+			console.log();
+		}
+		/* $.map() */
+		function double(value) {return value*2;}
+		console.log($.map(arr,double,this));
+
+		/* $.reduce() */
+		var i = 0;
+		function add(i,curV) {return i+curV;}
+		console.log($.reduce(arr,add));
+
+		/* $.filter() */
+		function filter(value) {return value >= 3;}
+		console.log($.filter(arr,filter));
+
+		/* $.some() */
+		function isEven(value) {return value%2 === 0;}
+		console.log($.some([1,2,3,5], isEven));
+	</script>
+</body>
+</html>
