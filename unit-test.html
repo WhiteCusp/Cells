@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 </head>
-<body>
+<body class="content">
 	<script type="text/javascript" src="./JQFree.js"></script>
 	<script type="text/javascript">
 		var obj = {id:1, name:'Kris', age:'18'};
@@ -30,6 +30,12 @@
 		/* $.some() */
 		function isEven(value) {return value%2 === 0;}
 		console.log($.some([1,2,3,5], isEven));
+
+		/* $().hasClass() */
+		$('body').addClass('Content');
+
+		/* $().toggleClass() */
+		$('body').toggleClass('COntent');
 	</script>
 </body>
 </html>
