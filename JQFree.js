@@ -1,7 +1,6 @@
 (function(window) {
 
-	// All **ECMAScript 5** native function implementations that we hope to use
-  // are declared here.
+	// 在这个库中我们会实现一些原生ES5的方法来兼容老旧的浏览器
 
   var ArrayProto = Array.prototype;
   var FuncProto = Function.prototype;
@@ -20,10 +19,12 @@
     nativeTrim         = String.prototype.trim,
     nativeBind         = FuncProto.bind;
 
+    /* 实现DOM选择器并返回包装对象 */
 	var _JQF = $ = function(selector) {
 		return new _JQF.fn.init(selector);
 	};
 
+	/* 为包装对象的原型添加方法 */
 	_JQF.fn = _JQF.prototype = {
 		init: function(selector) {
 			if (typeof selector === "string") {
@@ -153,15 +154,6 @@
 		removeClass: function(clsName) {
 			if (this[0].classList) {
 				$.fn.removeClass = function(clsName) {
-					try {
-						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-							throw new Error("Not a correct className format!");
-						}
-					} catch (e) {
-						console.log(e.message);
-						return;
-					}
-
 					this[0].classList.remove(clsName);
 				};
 			} else {
