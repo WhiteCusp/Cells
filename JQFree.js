@@ -117,20 +117,17 @@
 		},
 
 		hasClass: function(clsName) {
-
+			var className = this[0].className;
+			var reg = new RegExp("\\b" + clsName + "\\b");
+			if (!reg.test(className)) {
+				return false;
+			}
+			return true;
 		},
 
 		addClass: function(clsName) {
 			if (this[0].classList) {
 				$.fn.addClass = function(clsName) {
-					try {
-						if (typeof clsName !== "string" || !/^[a-zA-Z_]\w*$/.test(clsName)) {
-							throw new Error("Not a correct className format!");
-						}
-					} catch (e) {
-						console.log(e.message);
-						return;
-					}
 					this[0].classList.add(clsName);
 				};
 			} else {
@@ -144,8 +141,7 @@
 						return;
 					}
 					var origClass = this[0].className;
-					var reg = new RegExp("\\b" + clsName + "\\b");
-					if (!reg.test(origClass)) {
+					if (!this.hasClass(clsName)) {
 						this[0].className += (origClass.length == 0 ? clsName : " " + clsName);
 					}
 				};
@@ -190,7 +186,11 @@
 		},
 
 		toggleClass: function(clsName) {
-
+			if (this.hasClass(clsName)) {
+				this.removeClass(clsName);
+			} else {
+				this.addClass(clsName);
+			}
 		},
 
 		attr: function(name, value) {
