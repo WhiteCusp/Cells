@@ -1,3 +1,3 @@
-cells.js
+JQFree.js
 =========
-A moduling JS labrary building with countless cell...
+A javascript labrary for replacing the jquery.
