@@ -1,3 +1,3 @@
 JQFree.js
 =========
-A javascript labrary for avoiding using the heavy jquery.
+A javascript labrary for replacing the jquery.
