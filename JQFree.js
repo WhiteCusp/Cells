@@ -266,7 +266,7 @@
 			}
 
 			if (type == "POST") {
-				xhr.open(type, url, true);
+				xhr.open("POST", url, true);
 				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			} else {
 				if (param) {
@@ -274,7 +274,7 @@
 				} else {
 					encodeParams = null;
 				}
-				xhr.open(type, url, true);
+				xhr.open("GET", url, true);
 			}
 
 			xhr.onreadystatechange = function() {
