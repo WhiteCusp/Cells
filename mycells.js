@@ -17,11 +17,11 @@
     nativeTrim         = String.prototype.trim,
     nativeBind         = FuncProto.bind;
 
-	var _JQF = $ = function(selector) {
-		return new _JQF.fn.init(selector);
+	var _cells = $ = function(selector) {
+		return new _cells.fn.init(selector);
 	};
 
-	_JQF.fn = _JQF.prototype = {
+	_cells.fn = _cells.prototype = {
 		init: function(selector) {
 			if (typeof selector === "string") {
 				var elem = document.querySelectorAll(selector);
@@ -35,7 +35,7 @@
 		append: function(ele) {
 			if (typeof ele === "string") {
 				this[0].innerHTML += ele;
-			} else if (ele instanceof _JQF) {
+			} else if (ele instanceof _cells) {
 				for (var i = 0, len = ele.length; i < len; i++) {
 					this[0].appendChild(ele[i]);
 				}
@@ -48,7 +48,7 @@
 		prepend: function(ele) {
 			if (typeof ele === "string") {
 				this[0].innerHTML = ele + this[0].innerHTML;
-			} else if (ele instanceof _JQF) {
+			} else if (ele instanceof _cells) {
 				for (var i = 0, len = ele.length; i < len; i++) {
 					this[0].insertBefore(ele[i], this[0].firstChild);
 				}
@@ -202,9 +202,9 @@
 		}
 
 	};
-	_JQF.fn.init.prototype = _JQF.fn;
+	_cells.fn.init.prototype = _cells.fn;
 
-	_JQF.extend = function(obj1, obj2) {
+	_cells.extend = function(obj1, obj2) {
 		for (var prop in obj2) {
 			if (obj2.hasOwnProperty(prop)) {
 				obj1[prop] = obj2[prop];
@@ -212,7 +212,7 @@
 		}
 	};
 
-	$.extend(_JQF, {
+	$.extend(_cells, {
 		merge: function(first, second) {
 			var l = second.length,
 				i = first.length || 0,
@@ -253,7 +253,7 @@
 		},
 
 		ajax: function(type, url, callback, param) {
-			var xhr = _JQF.createXHR(),
+			var xhr = _cells.createXHR(),
 				encodeParams = [];
 			if (param) {
 				for (var i = param.length - 1; i >= 0; i--) {
@@ -485,10 +485,10 @@
 		};
 	};
 
-	window.JQF = window.$ = _JQF;
+	window.cells = window.$ = _cells;
 	window.core = _core;
 
 	if ( typeof define === "function" && define.amd ) {
-		define( "JQFree", [], function () { return JQF; } );
+		define( "cells", [], function () { return cells; } );
 	}
 })(window);

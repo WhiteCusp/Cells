@@ -1,3 +1,3 @@
-JQFree.js
+mycells.js
 =========
-A javascript labrary for avoiding using the heavy jquery.
+A JS labrary building with countless cell...
