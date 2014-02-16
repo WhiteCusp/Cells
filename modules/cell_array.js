@@ -1,3 +1,6 @@
+/*
+ * 数组细胞 
+ */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
 		define(name,[],definition);
@@ -6,7 +9,7 @@
 	} else {
 		window[name] = definition;
 	}
-})('array',function() {
+})('cell_array',function() {
 
 	var ArrayProto = Array.prototype;
 

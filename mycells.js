@@ -488,7 +488,7 @@
 	window.cells = window.$ = _cells;
 	window.core = _core;
 
-	if ( typeof define === "function" && define.amd ) {
+	if ( typeof define === "function" ) {
 		define( "cells", [], function () { return cells; } );
 	}
 })(window);
