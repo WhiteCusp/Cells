@@ -4,8 +4,6 @@
 ;(function (name, definition) {
 	if (typeof define == 'function') {
 		define(name,[],definition);
-	} else if (typeof module != 'undefined' && module.exports) {
-		module.exports = definition;
 	} else {
 		window[name] = definition;
 	}
