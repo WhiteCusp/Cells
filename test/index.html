@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="modules/cell_ajax.js"></script>
+	<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript">
+		function cb(result) {console.log(result);}
+		var options = {
+			url : 'http://api.flickr.com/services/feeds/photos_public.gne',
+			type : "GET",
+			data: {
+			    tags: "mount rainier",
+			    tagmode: "any",
+			    format: "json",
+			    text:"哈哈"
+			},
+			dataType: "jsonp",
+			jsonp: 'jsoncallback',
+			jsonpCallback: "cb"
+		};
+		// $.getJSON('http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?',{
+		// 	tags: "mount rainier",
+		//     tagmode: "any",
+		//     format: "json"
+		// },cb);
+		$.ajax(options);
+
+		// 数组细胞测试
+		// var ajax = cell_ajax();
+		// ajax.loadScript('modules/cell_array.js',{
+		// 	onSuccess : function() {
+		// 		var A = cell_array();
+		// 		console.log(A.distinct([1,1,2,2,3,4,5]));
+		// 	}
+		// });
+		
+		// ajax细胞测试
+		// var ajax = cell_ajax();
+		// ajax.ajax('data.php',{
+		// 	onSuccess: function(data) {
+		// 		console.log(data);
+		// 	},
+		// 	type : 'post',
+		// 	data: {
+		// 		a : 'a',
+		// 		b : 'b'
+		// 	},
+		// 	dataType: 'json'
+		// });
+
+		// 模拟事件细胞测试
+		// var ajax = cell_ajax();
+		// function insertPage1(num1, num2){console.log(num1 + num2);}
+		// function insertPage2(num1, num2){console.log(num1*10 + num2*10);}
+		// ajax.loadScript('modules/cell_event.js',{
+		// 	onSuccess : function () {
+		// 		var E = cell_event();
+		// 		E.on('insertPage', insertPage1);
+		// 		E.on('insertPage', insertPage2);
+		// 		E.off('insertPage', insertPage2);
+		// 		E.trigger('insertPage',1,4);
+		// 	}
+		// });
+	</script>
+</head>
+<body>
+	<div id='oScrollMe'></div>
+	<script type="text/javascript">
+		var o = {
+			a : 3,
+			f : function(num1, num2) {
+				return num1 + num2;
+			}
+		}
+		var json = JSON.stringify(o);
+		console.log(json);
+		var data = '{"a":3,"f":"function(){return 3;}"}';
+		var obj = (new Function("return" + data))();
+		console.log(obj);
+	</script>
+</body>
+</html>
