@@ -233,57 +233,6 @@
 			return first;
 		},
 
-		createXHR: function() {
-			if (typeof XMLHttpRequest !== "undefined") {
-				$.createXHR = function() {
-					return new XMLHttpRequest();
-				};
-			} else {
-				$.createXHR = function() {
-					var xmlVer = ["Microsoft.XMLHTTP", "MSXML2.XMLHTTP"];
-					for (var i = xmlVer.length - 1; i >= 0; i--) {
-						try {
-							return new ActiveXObject(xmlVer[i]);
-						} catch (e) {}
-					}
-				};
-			}
-
-			return $.createXHR();
-		},
-
-		ajax: function(type, url, callback, param) {
-			var xhr = _cells.createXHR(),
-				encodeParams = [];
-			if (param) {
-				for (var i = param.length - 1; i >= 0; i--) {
-					encodeParams.push(encodeURIComponent(param[i].name) + "=" + encodeURIComponent(param[i].value));
-				}
-				encodeParams = encodeParams.join("&");
-			}
-
-			if (type == "POST") {
-				xhr.open(type, url, true);
-				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			} else {
-				if (param) {
-					url += url.indexOf("?") == -1 ? ("?" + encodeParams) : ("&" + encodeParams);
-				} else {
-					encodeParams = null;
-				}
-				xhr.open(type, url, true);
-			}
-
-			xhr.onreadystatechange = function() {
-				if (xhr.readyState == 4) {
-					if (xhr.status == 200) {
-						callback(xhr.responseText);
-					}
-				}
-			};
-			xhr.send(encodeParams);
-		},
-
 		bind: function(fn, context) {
 			return function() {
 				fn.apply(context, arguments);

@@ -1,3 +1,3 @@
-mycells.js
+cells.js
 =========
 A JS labrary building with countless cell...
