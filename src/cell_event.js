@@ -1,5 +1,5 @@
 /*
- * 模拟事件细胞 
+ * 事件细胞 
  */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
@@ -13,6 +13,7 @@
 	}
 
 	cellfn = Cell.prototype = {
+
 		on : function(types, fn) {
 			if (types.indexOf(' ') !== -1) {
 				var eventList = types.split(' ');

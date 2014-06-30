@@ -12,6 +12,7 @@
 	function Cell() {}
 
 	cellfn = Cell.prototype = {
+
 		domReady : function(fn) {
 			if (document.readyState === 'complete') {
 				// 如果文档已完成接收，则直接调用
@@ -30,6 +31,14 @@
 					fn();
 				})();
 			}
+		},
+
+		random : function(min, max) {
+			if (max == null) {
+				max = min;
+				min = 0;
+			}
+			return min + Math.floor(Math.random() * (max - min + 1));
 		}
 	};
 

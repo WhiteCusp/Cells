@@ -1,5 +1,5 @@
 /*
- * Ajax细胞 
+ * http细胞 
  */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
