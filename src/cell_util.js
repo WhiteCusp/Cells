@@ -119,7 +119,6 @@
 
 	
 	cellfn.escape = function(str) {
-
 		return str.replace(this._escapseReg, this.bind(function(match){
 			return this._escapseMap[match];
 		}, this));
