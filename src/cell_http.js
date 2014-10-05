@@ -1,13 +1,14 @@
 /*
- * http细胞 
+ * http cell 
  */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
 		define(name,[],definition);
 	} else {
-		window[name] = definition;
+		window['cell'] = window.cell || {};
+		window['cell'][name] = definition();
 	}
-})('cell_ajax',function() {
+})('http',function() {
 
 	var DOC = document,
 		head = DOC.getElementsByTagName('head')[0];

@@ -4,35 +4,36 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<script type="text/javascript" src="../src/cell_http.js"></script>
+	<script type="text/javascript" src="../src/cell_util.js"></script>
 	<script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
 	<script type="text/javascript">
-		function cb(result) {console.log(result);}
+		// function cb(result) {console.log(result);}
 
-		// jsonp 请求
-		var options = {
-			url : 'http://api.flickr.com/services/feeds/photos_public.gne',
-			type : "GET",
-			data: {
-			    tags: "mount rainier",
-			    tagmode: "any",
-			    format: "json",
-			    text:"哈哈"
-			},
-			dataType: "jsonp",
-			jsonp: 'jsoncallback',      // 根据服务端提供的API接口而定
-			jsonpCallback: "cb"
-		};
+		// // jsonp 请求
+		// var options = {
+		// 	url : 'http://api.flickr.com/services/feeds/photos_public.gne',
+		// 	type : "GET",
+		// 	data: {
+		// 	    tags: "mount rainier",
+		// 	    tagmode: "any",
+		// 	    format: "json",
+		// 	    text:"哈哈"
+		// 	},
+		// 	dataType: "jsonp",
+		// 	jsonp: 'jsoncallback',      // 根据服务端提供的API接口而定
+		// 	jsonpCallback: "cb"
+		// };
 
-  	$.ajax(options);
+  	// $.ajax(options);
 
-  	$.ajax({
-		  url: "../data.php",
-		  dataType: "html"
-		}).done(function ( data ) {
-		  if( console && console.log ) {
-		    console.log("Sample of data:" + data);
-		  }
-		});
+  // 	$.ajax({
+		//   url: "../data.php",
+		//   dataType: "html"
+		// }).done(function ( data ) {
+		//   if( console && console.log ) {
+		//     console.log("Sample of data:" + data);
+		//   }
+		// });
 
   	// <?php
 		// 服务端返回JSON数据  
@@ -103,7 +104,8 @@
 		// var data = '{"a":3,"f":"function(){return 3;}"}';
 		// var obj = (new Function("return" + data))();
 		// console.log(obj);
-		function check(e){console.log(e);}
+		// function check(e){console.log(e);}
+		console.log(cell.util.escape("<div>"));
 	</script>
 </body>
 </html>

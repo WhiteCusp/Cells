@@ -1,15 +1,26 @@
 /*
- * 工具细胞 
+ * util cell
  */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
 		define(name,[],definition);
 	} else {
-		window[name] = definition;
+		window['cell'] = window.cell || {};
+		window['cell'][name] = definition();
 	}
-})('cell_event',function() {
+})('util',function() {
 	
-	function Cell() {}
+	function Cell() {
+		this._escapseMap = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#x27;'
+		};
+
+		this._escapseReg = new RegExp('[' + cellfn.keys(this._escapseMap).join('') + ']', 'g');
+	}
 
 	cellfn = Cell.prototype = {
 
@@ -66,8 +77,53 @@
 			ev.target = ev.srcElement || ev.target; 
 			ev.pageX = ev.x || ev.pageX;
 			ev.pageY = ev.y || ev.pageY;
-    }
+    },
+
+    keys: Object.keys || function(obj) {
+			if (obj !== Object(obj)) throw new TypeError('Invalid object');
+
+			var result = [];
+			for(var prop in obj) {
+				if (obj.hasOwnProperty(prop)) {
+					result.push(prop);
+				}
+			}
+			return result;
+		},
+
+		extend: function(obj1, obj2) {
+			for (var prop in obj2) {
+				if (obj2.hasOwnProperty(prop)) {
+					obj1[prop] = obj2[prop];
+				}
+			}
+		},
+
+		trim: function(str) {
+			if (String.prototype.trim) {
+				return str.trim();
+			}
+
+			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+		},
+
+		bind: function(fn, context) {
+			var args, bound;
+			args = Array.prototype.slice.call(arguments, 2);
+			
+			return bound = function() {
+				return fn.apply(context, args.concat(Array.prototype.slice.call(arguments)));
+			};
+		}
 	};
+
+	
+	cellfn.escape = function(str) {
+
+		return str.replace(this._escapseReg, this.bind(function(match){
+			return this._escapseMap[match];
+		}, this));
+	}
 
 	return new Cell();
 });

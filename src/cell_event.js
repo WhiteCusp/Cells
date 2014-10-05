@@ -5,9 +5,10 @@
 	if (typeof define == 'function') {
 		define(name,[],definition);
 	} else {
-		window[name] = definition;
+		window['cell'] = window.cell || {};
+		window['cell'][name] = definition();
 	}
-})('cell_event',function() {
+})('event',function() {
 	function Cell() {
 		this._listeners = {};
 	}
@@ -16,9 +17,10 @@
 
 		on : function(types, fn) {
 			if (types.indexOf(' ') !== -1) {
-				var eventList = types.split(' ');
-				var i = 0,
-				len = eventList.length;
+				var					i = 0,
+									len = eventList.length,
+						eventList = types.split(' ');
+
 				for (; i < len; i++) {
 					this.on(eventList[i], fn);
 				}

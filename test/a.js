@@ -1,1 +1,0 @@
-document.getElementById('oScrollMe').innerText = "汉子";

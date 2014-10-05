@@ -5,9 +5,10 @@
 	if (typeof define == 'function') {
 		define(name,[],definition);
 	} else {
-		window[name] = definition;
+		window['cell'] = window.cell || {};
+		window['cell'][name] = definition();
 	}
-})('cell_array',function() {
+})('array',function() {
 
 	var ArrayProto = Array.prototype;
 
