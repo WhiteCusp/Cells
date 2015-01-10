@@ -12,11 +12,11 @@
 	
 	function Cell() {
 		this._escapseMap = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#x27;'
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#x27;'
 		};
 
 		this._escapseReg = new RegExp('[' + cellfn.keys(this._escapseMap).join('') + ']', 'g');
@@ -44,18 +44,12 @@
 			}
 		},
 
-		random : function(min, max) {
-			if (max === null) {
-				max = min;
-				min = 0;
-			}
-			return min + Math.floor(Math.random() * (max - min + 1));
-		},
-
+		// 返回文档的顶部滚动高度
 		scrollTop: function() {
 			return document.documentElement.scrollTop || document.body.scrollTop;
 		},
 
+		// 返回元素相对于文档的偏移值
 		getOffset: function(element) {
       var result = {
 				top:element.offsetTop,
@@ -72,6 +66,7 @@
       return result;
     },
 
+    // 修正IE上的事件对象
     fixEvent: function(ev) {
     	//ie 6 7 8不存在target、pageX、pageY
 			ev.target = ev.srcElement || ev.target; 
@@ -79,6 +74,7 @@
 			ev.pageY = ev.y || ev.pageY;
     },
 
+    // 返回包含一个对象的所有属性名的数组
     keys: Object.keys || function(obj) {
 			if (obj !== Object(obj)) throw new TypeError('Invalid object');
 
@@ -91,6 +87,7 @@
 			return result;
 		},
 
+		// 拓展一个对象
 		extend: function(obj1, obj2) {
 			for (var prop in obj2) {
 				if (obj2.hasOwnProperty(prop)) {
@@ -99,14 +96,17 @@
 			}
 		},
 
+		// 去除一个字符串左右两边的空格（不包含字符串中间的空格）
 		trim: function(str) {
 			if (String.prototype.trim) {
 				return str.trim();
 			}
 
-			return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+			return str.replace(/^\s+|\s+$/g, '');
+			// return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 		},
 
+		// 将函数绑定到一个指定的上下文中
 		bind: function(fn, context) {
 			var args, bound;
 			args = Array.prototype.slice.call(arguments, 2);
@@ -114,15 +114,30 @@
 			return bound = function() {
 				return fn.apply(context, args.concat(Array.prototype.slice.call(arguments)));
 			};
-		}
-	};
+		},
 
-	
-	cellfn.escape = function(str) {
-		return str.replace(this._escapseReg, this.bind(function(match){
-			return this._escapseMap[match];
-		}, this));
-	}
+		// 返回一个介于min和max之间的整型随机数
+		// 使用 Math.round() 会返回一个不均匀的随机数分布
+		getRandomInt: function(min, max) {
+		  return Math.floor(Math.random() * (max - min + 1) + min);
+		},
+
+		// HTML特殊字符转义
+		escape : function(str) {
+			var _escapseMap = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#x27;'
+			};
+
+			return str.replace(/[<>&"]/g, function(match){
+				return this._escapseMap[match];
+			});
+		}
+		
+	};
 
 	return new Cell();
 });

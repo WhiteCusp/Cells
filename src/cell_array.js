@@ -95,6 +95,16 @@
 		},
 
 		/**
+		 * 返回数组中的随机项，用于数字数组
+		 * @param  {Array} arr 数组
+		 * @return  {Number} 数组中的随机项
+		 * @method randomItem
+		 */
+		randomItem: function(arr) {
+			return arr[Math.floor(Math.random() * arr.length)];
+		}
+
+		/**
 		 * 返回数组中指定元素的索引
 		 * @param  {Array} arr 数组
 		 * @param  {item} value 元素值
@@ -163,6 +173,16 @@
 				}
 			}
 			return result;
+		},
+
+		/**
+		 * 打乱一个数组（此方法返回的数组分布不均匀）
+		 * @param  {Array} arr 数组
+		 * @return  {Array}  顺序打乱后的数组
+		 * @method clean
+		 */
+		shuffle : function(arr) {
+			return arr.sort(function(){ return Math.random() - 0.5});
 		}
 	};
 
