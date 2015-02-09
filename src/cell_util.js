@@ -86,6 +86,15 @@
       }
     },
 
+    // 为对象设置行内样式
+    css: function(obj, style) {
+      var type = Object.prototype.toString.call(obj);
+      if(type !== '[object Object]') {return}
+      for(var attr in style) {
+        obj.style[attr] = style[attr];
+      }
+    },
+
     // 去除一个字符串左右两边的空格（不包含字符串中间的空格）
     trim: function(str) {
       if (String.prototype.trim) {
@@ -127,6 +136,7 @@
       });
     },
 
+    // 设备检测
     platform : function() {
       var ua = navigator.userAgent;
       var platform = {};
