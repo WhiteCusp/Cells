@@ -10,11 +10,13 @@
 	}
 })('array',function() {
 
+	"use strict"
+
 	var ArrayProto = Array.prototype;
 
 	function Cell() {};
 
-	cellfn = Cell.prototype = {
+	var cellfn = Cell.prototype = {
 		/**
 		 * 合并数组。
 		 * @param  {Array} arr1 源数组
@@ -35,39 +37,21 @@
 		},
 
 		/**
-		 * 判断数组是否包含某个值。
-		 * @param  {Array} arr 源数组
-		 * @param  {?} value 包含值
-		 * @return  {Boolean} 判断结果
-		 * @method find
-		 */
-		find : function(arr, value) {
-			var i = 0, len;
-
-			for (; i < len; i++) {
-				if (arr[i] === value) {return true;}
-			}
-
-			return false;
-		},
-
-		/**
 		 * 数组去重(遍历法)
 		 * @param  {Array} arr 数组
 		 * @return  {Array} 去重后数组
-		 * @method distinct
+		 * @method unique 
 		 */
-		distinct : function (arr) {
-			var ret = [],
-				len = arr.length;
+		unique : function (arr) {
+			var ret = []
 
-			for ( var i = 0; i < len; i++ ){
-				for( var j = i+1; j < len; j++ ){
+			for ( var i = arr.length - 1; i >= 0; i-- ){
+				for( var j = i-1; j >= 0; j-- ){
 					if( arr[i] === arr[j] ){
-						j = ++i;
+						j = --i;
 					}
 				}
-				ret.push(arr[i]);
+				ret.unshift(arr[i]);
 			}
 
 			return ret;
@@ -102,7 +86,7 @@
 		 */
 		randomItem: function(arr) {
 			return arr[Math.floor(Math.random() * arr.length)];
-		}
+		},
 
 		/**
 		 * 返回数组中指定元素的索引
@@ -137,7 +121,7 @@
 		 * @method removeAt
 		 */
 		removeAt : function(arr, index) {
-			if (arr.splice(index, 1).length === 1) {return true;}
+			if (arr.splice(index - 1, 1).length === 1) {return true;}
 			return false;
 		},
 
@@ -149,12 +133,9 @@
 		 * @method remove
 		 */
 		remove : function(arr, value) {
-			var index = this.indexOf(arr, value);
-			if (index !== -1) {
-				this.removeAt(arr, index);
-				return true;
+			for (var len = arr.length - 1; len >= 0; len--) {
+				arr[len] === value && arr.splice(len, 1)
 			}
-			return false;
 		},
 
 
@@ -168,7 +149,7 @@
 			var result = [],
 			empty = [undefined, null, ''];
 			for (var i = 0, len = arr.length; i < len; i += 1) {
-				if (!(this.find(empty, arr[i]))) {
+				if (this.indexOf(empty, arr[i]) === -1) {
 					result.push(arr[i]);
 				}
 			}
