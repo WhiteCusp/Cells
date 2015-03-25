@@ -1,50 +1,75 @@
 /*
- * 事件细胞 
+ * �¼�ϸ�� 
  */
 ;(function (name, definition) {
 	if (typeof define == 'function') {
-		define(name,[],definition);
+		define(name,[],definition)
 	} else {
-		window['cell'] = window.cell || {};
-		window['cell'][name] = definition();
+		window['cell'] = window.cell || {}
+		window['cell'][name] = definition()
 	}
 })('event',function() {
+  "use strict"
+
 	function Cell() {
-		this._listeners = {};
+		this._listeners = {}
 	}
 
 	cellfn = Cell.prototype = {
 
-		on : function(ele, types, fn) {
-			if (ele.length) {};
-			if (types.indexOf(' ') !== -1) {
-				var					i = 0,
-									len = eventList.length,
-						eventList = types.split(' ');
+		on : function(ele, evTypes, cb) {
+      var eleLength = ele.length
 
-				for (; i < len; i++) {
-					this.on(eventList[i], fn);
+      if (eleLength) {
+        for (var i = 0; i < eleLength; i++) {
+          this.on(ele[i], evTypes, cb)
+        }
+      }
+
+			if (evTypes.indexOf(' ') !== -1) {
+        var eventList = evTypes.split(' '),
+                  len = eventList.length
+
+				for (var i = 0; i < len; i++) {
+					this.on(ele, eventList[i], cb)
 				}
-			} else {
-				this._listeners[types] = this._listeners[types] || [];
-				this._listeners[types].push(fn);
 			}
+
+      if (isDomEvent(ele, evTypes)) {
+        this.addEventListener(ele, evTypes, cb)
+      } else {
+				this._listeners[evTypes] = this._listeners[evTypes] || [];
+				this._listeners[evTypes].push(cb);
+			}
+
 		},
 
-		off : function(types, fn) {
-			if (types.indexOf(' ') !== -1) {
-				var eventList = types.split(' ');
-				var i = 0,
-				len = eventList.length;
-				for (; i < len; i++) {
-					this.off(eventList[i], fn);
-				}
-			} else {
-				if (typeof this._listeners[types] !== 'undefined') {
-					var listeners = this._listeners[types],
+		off : function(ele, evTypes, cb) {
+      var eleLength = ele.length
+
+      if (eleLength) {
+        for (var i = 0; i < eleLength; i++) {
+          this.off(ele[i], evTypes, cb)
+        }
+      }
+
+			if (evTypes.indexOf(' ') !== -1) {
+        var eventList = evTypes.split(' '),
+                  len = eventList.length
+
+        for (var i = 0; i < len; i++) {
+          this.off(ele, eventList[i], cb)
+        }
+      }
+
+      if (isDomEvent(ele, evTypes)) {
+        this.removeEventListener(ele, evTypes, cb)
+      } else {
+				if (typeof this._listeners[evTypes] !== 'undefined') {
+					var listeners = this._listeners[evTypes],
 						n = listeners.length;
 					for (; n >= 0; n--) {
-						listeners[n] == fn && listeners.splice(n,1);
+						listeners[n] === cb && listeners.splice(n,1);
 					}
 				}
 			}
@@ -62,73 +87,55 @@
 				};
 			}
 
-		}
-	};
+		},
+    // ��dom�¼�
+    addEventListener: function(ele, evTypes, cb, useCapture) {
+      useCapture = useCapture || false
 
-	var customEvent = {
-		tap:function(ele,handler){
-      //按下松开之间的移动距离小于20，认为发生了tap
-      var TAP_DISTANCE = 20;
-      //双击之间最大耗时
-      var DOUBLE_TAP_TIME = 300;
-      var pt_pos;
-      var ct_pos;
-      var pt_up_pos;
-      var pt_up_time;
-      var evtType;
-      var startEvtHandler = function(e){
-        // e.stopPropagation();
-        var touches = e.touches;
-        if(!touches || touches.length == 1){//鼠标点击或者单指点击
-          ct_pos = pt_pos = getTouchPos(e);
+      if (isW3C()) {
+        ele.addEventListener(evTypes, cb, useCapture)
+      } else {
+        if(ele.attachEvent){
+          ele.attachEvent('on' + evTypes, cb)
+        }
+        else{
+          oldCallback = obj['on' + evTypes]
+
+          obj['on' + evTypes] = function(){
+            if(oldCallback) {
+              oldCallback.apply(this, arguments)
+            }
+            return cb.apply(this, arguments)
+          }
         }
       }
-      var moveEvtHandler = function(e){
-        // e.stopPropagation();
-        e.preventDefault();
-        ct_pos = getTouchPos(e);
-      }
-      var endEvtHandler = function(e){
-          // e.stopPropagation();
-          var now = Date.now(); 
-          var dist = getDist(ct_pos , pt_pos);
-          var up_dist = getDist(ct_pos , pt_up_pos);
+    },
 
-          if(dist < TAP_DISTANCE){
-              if(pt_up_time && now - pt_up_time < DOUBLE_TAP_TIME && up_dist < TAP_DISTANCE){
-                  evtType = "doubletap";
-              }
-              else{
-                  evtType = "tap";
-              }
-              handler.call(ele,{
-                  target:e.target,
-                  oriEvt:e,
-                  type:evtType
-              });
-          }
-          pt_up_pos = ct_pos;
-          pt_up_time = now;
-      }
-  
-      ele.on(startEvt,startEvtHandler);
-      ele.on(moveEvt,moveEvtHandler);
-      ele.on(endEvt,endEvtHandler);
+    removeEventListener: function(ele, evTypes, cb, useCapture) {
+      useCapture = useCapture || false
 
-      var evtOpt = {
-        ele:ele,
-        evtType:"tap",
-        handler:handler
+      if (isW3C()) {
+        ele.removeEventListener(evTypes, cb, useCapture)
+      } else {
+        if(ele.detachEvent){
+          ele.detachEvent('on' + evTypes, cb)
+        }
+        else{
+          obj['on' + evTypes] = ''
+        }
       }
-      evtOpt.actions = {};
-      evtOpt.actions[startEvt] = startEvtHandler;
-      evtOpt.actions[moveEvt] = moveEvtHandler;
-      evtOpt.actions[endEvt] = endEvtHandler;
-
-      customEventHandlers.push(evtOpt);
-	      
-	  }
+    }
 	}
 
-	return new Cell();
+  var isDomEvent=function(obj,evtType){
+    if(("on" + evtType).toLowerCase() in obj){
+      return true
+    } else { return false }
+  }
+
+  var isW3C = function() {
+    return !!document.addEventListener
+  }
+
+	return new Cell()
 });
