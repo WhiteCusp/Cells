@@ -39,7 +39,16 @@
         cHttp.ajax('data_error.php', option)
       })
 
+      test('Function "loadStyle" Tests', function(){
+        cHttp.loadStyle('test.css')
+
+        var fileName = document.styleSheets[0].href.replace(/.+/g, '')
+        console.log(fileName)
+        assert(true)
+      })
+
     })
+
   </script>
   <script>mocha.run()</script>
 </body>
