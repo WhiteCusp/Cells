@@ -1,20 +1,20 @@
 /*
  * 数组细胞 
  */
-;(function (name, definition) {
+;(function (definition) {
 	if (typeof define == 'function') {
-		define(name,[],definition);
+		define(definition)
 	} else {
-		window['cell'] = window.cell || {};
-		window['cell'][name] = definition();
+		window['cell'] = window.cell || {}
+		window['cell']['array'] = definition()
 	}
-})('array',function() {
+})(function() {
 
 	"use strict"
 
-	var ArrayProto = Array.prototype;
+	var ArrayProto = Array.prototype
 
-	function Cell() {};
+	function Cell() {}
 
 	var cellfn = Cell.prototype = {
 		/**
@@ -26,14 +26,14 @@
 		 */
 		merge : function(arr1, arr2) {
 			var i = arr1.length,
-				j = arr2.length,
-				n = 0;
+					j = arr2.length,
+					n = 0
 
 			for (; n < j; n++) {
-				arr1[i++] = arr2[n];
+				arr1[i++] = arr2[n]
 			}
 
-			return arr1;
+			return arr1
 		},
 
 		/**
@@ -48,13 +48,13 @@
 			for ( var i = arr.length - 1; i >= 0; i-- ){
 				for( var j = i-1; j >= 0; j-- ){
 					if( arr[i] === arr[j] ){
-						j = --i;
+						j = --i
 					}
 				}
-				ret.unshift(arr[i]);
+				ret.unshift(arr[i])
 			}
 
-			return ret;
+			return ret
 		},
 
 		/**
@@ -64,7 +64,7 @@
 		 * @method min
 		 */
 		min : function (arr) {
-			return Math.min.apply(0, arr);
+			return Math.min.apply(0, arr)
 		},
 
 		/**
@@ -75,7 +75,7 @@
 		 */
 		max : function (arr) {
 			//返回数组中的最大值，用于数字数组。
-			return Math.max.apply(0, arr);
+			return Math.max.apply(0, arr)
 		},
 
 		/**
@@ -85,7 +85,7 @@
 		 * @method randomItem
 		 */
 		randomItem: function(arr) {
-			return arr[Math.floor(Math.random() * arr.length)];
+			return arr[Math.floor(Math.random() * arr.length)]
 		},
 
 		/**
@@ -97,20 +97,20 @@
 		 */
 		indexOf : function (arr, value) {
 			if (ArrayProto.indexOf) {
-				return ArrayProto.indexOf.call(arr,value);
+				return ArrayProto.indexOf.call(arr,value)
 			}
 
 			var index = -1,
-				len = arr.length;
+					len = arr.length
 
 			for (var i = 0; i < len; i++) {
 				if (arr[i] === value) {
-					index = i;
-					break;
+					index = i
+					break
 				}
 			}
 
-			return index;
+			return index
 		},
 
 		/**
@@ -121,8 +121,8 @@
 		 * @method removeAt
 		 */
 		removeAt : function(arr, index) {
-			if (arr.splice(index - 1, 1).length === 1) {return true;}
-			return false;
+			if (arr.splice(index - 1, 1).length === 1) {return true}
+			return false
 		},
 
 		/**
@@ -147,13 +147,15 @@
 		 */
 		clean : function (arr) {
 			var result = [],
-			empty = [undefined, null, ''];
+			empty = [undefined, null, '']
+
 			for (var i = 0, len = arr.length; i < len; i += 1) {
 				if (this.indexOf(empty, arr[i]) === -1) {
-					result.push(arr[i]);
+					result.push(arr[i])
 				}
 			}
-			return result;
+
+			return result
 		},
 
 		/**
@@ -163,9 +165,9 @@
 		 * @method clean
 		 */
 		shuffle : function(arr) {
-			return arr.sort(function(){ return Math.random() - 0.5});
+			return arr.sort(function(){ return Math.random() - 0.5})
 		}
-	};
+	}
 
-	return new Cell();
+	return new Cell()
 });

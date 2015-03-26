@@ -1,22 +1,24 @@
 /*
  * http cell 
  */
-;(function (name, definition) {
+;(function (definition) {
 	if (typeof define == 'function') {
-		define(name,[],definition);
+		define(definition)
 	} else {
-		window['cell'] = window.cell || {};
-		window['cell'][name] = definition();
+		window['cell'] = window.cell || {}
+		window['cell']['http'] = definition()
 	}
-})('http',function() {
+})(function() {
+
+	"use strict"
 
 	var DOC = document,
-		head = DOC.getElementsByTagName('head')[0];
-		W3C = DOC.addEventListener;
+			head = DOC.getElementsByTagName('head')[0],
+			W3C = DOC.addEventListener
 
 	function Cell() {}
 
-	cellfn = Cell.prototype = {
+	var cellfn = Cell.prototype = {
 		/**
 		 * Ajax请求
 		 * @param {String} url : ajax请求地址
@@ -49,61 +51,59 @@
 					json: "application/json, text/javascript",
 					"*": "*/*"
 				}
-			};
-
-			var timeoutTimer = setTimeout(function () {
-				requestTimeout = true;
-				options.onTimeout();
-				xhr = null;
-			},options.timeout);
-
-			var xhr = createXHR(),
-				hasContent = /POST/.test(options.type);
-
-			options.data = this.buildAjaxParam(options.data);
-
-			if (!hasContent) {
-				url += url.indexOf("?") == -1 ? ("?" + options.data) : ("&" + options.data);
-				delete options.data;
 			}
 
-			xhr.open(options.type, url, options.asyn);
+			var timeoutTimer = setTimeout(function () {
+				options.onTimeout()
+				xhr = null
+			},options.timeout)
+
+			var xhr = createXHR(),
+					hasContent = /POST/.test(options.type)
+
+			options.data = this.buildAjaxParam(options.data)
+
+			if (!hasContent) {
+				url += url.indexOf("?") == -1 ? ("?" + options.data) : ("&" + options.data)
+				delete options.data
+			}
+
+			xhr.open(options.type, url, options.asyn)
 
 			if (options.data && hasContent) {
-				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
 			}
 			
 			xhr.setRequestHeader("Accept",
 				options.dataType && options.accepts[ options.dataType ] ?
 				options.accepts[ options.dataType ] : options.accepts[ "*" ]
-			);
+			)
 
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState == 4) {
 					clearTimeout(timeoutTimer);
 					if (httpSuccess(xhr)) {
-						convertData = convertHttpData(xhr, options.dataType);
-						options.onSuccess(convertData);
+						options.onSuccess(xhr.response)
 					} else {
-						options.onError();
+						options.onError()
 					}
 				}
-			};
+			}
 
-			xhr.send(options.data);
+			xhr.send(options.data)
 		},
 
 		buildAjaxParam : function(o) {
 			var encodeParams,
-				s = [];
+					s = []
 
 			for ( key in o ) {
-				s[s.length] = encodeURIComponent(key) + "=" + encodeURIComponent(o[key]);
+				s[s.length] = encodeURIComponent(key) + "=" + encodeURIComponent(o[key])
 			}
 
-			encodeParams = s.join('&');
+			encodeParams = s.join('&')
 
-			return encodeParams;
+			return encodeParams
 		},
 
 		toJSON : function(o) {
@@ -112,40 +112,41 @@
 			if ( window.JSON && window.JSON.stringify ) {
 				var json = JSON.stringify(o, function(key, val){
 					if (typeof val === 'function') {
-						return val + '';
+						return val + ''
 					}
-					return val;
-				});
-				return json;
+					return val
+				})
+				return json
 			}
 			
 		},
 
 		parseJSON : function(data) {
-			var res = '';
+			var res = ''
 
 			if ( !data || typeof data !== "string") {
-				return null;
+				return null
 			}
 
 			if ( window.JSON && window.JSON.parse ) {
-				return window.JSON.parse( data );
+				return window.JSON.parse( data )
 			}
 
 			try {
-				res = (new Function("return" + data))();
+				res = (new Function("return" + data))()
 			} catch (e) {
-				throw new Error('parse error');
-				return;
+				throw new Error('parse error')
+				return
 			}
-			return res;
+			return res
 		},
 
 		loadStyle : function(url) {
-			var node = DOC.createElement("link");
-			node.rel = "stylesheet";
-			node.href = url;
-			head.insertBefore(node, head.firstChild);
+			var node = DOC.createElement("link")
+
+			node.rel = "stylesheet"
+			node.href = url
+			head.insertBefore(node, head.firstChild)
 		},
 
 		loadScript : function(url, options) {
@@ -156,27 +157,27 @@
 				function () {},
 				onSuccess : options.onSuccess ||
 				function () {}
-			};
+			}
 
 			//通过script节点加载目标模块,IE6-8不支持onload
-			var node = DOC.createElement("script");
+			var node = DOC.createElement("script")
 
 			node[W3C ? "onload" : "onreadystatechange"] = function () {
 				if (W3C || /loaded|complete/i.test(node.readyState)) {
-					node.onreadystatechange = node.onload = null;
-					option.onSuccess.call(this, node.src);
+					node.onreadystatechange = node.onload = null
+					option.onSuccess.call(this, node.src)
 				}
-			};
-
-			node.onerror = function () {
-				option.onError.call(this, node.src);
 			}
 
-			node.src = url;
-			head.insertBefore(node, head.firstChild);
-			option.onPending.call(this, node.src);
+			node.onerror = function () {
+				option.onError.call(this, node.src)
+			}
+
+			node.src = url
+			head.insertBefore(node, head.firstChild)
+			option.onPending.call(this, node.src)
 		}
-	};
+	}
 
 	/**
 	 * YUI2的创建xhr对象的封装
@@ -189,20 +190,20 @@
 			'MSXML3.XMLHTTP',
 			'Microsoft.XMLHTTP', //不支持readyState 3
 			'MSXML2.XMLHTTP.3.0' //不支持readyState 3
-		];
-		var xhr;
+		]
+		var xhr
 		try {
-			xhr = new XMLHttpRequest();
+			xhr = new XMLHttpRequest()
 		} catch (e) {
 			for (var i = 0, len = msxml_progid.length; i < len; ++i) {
 				try {
-					xhr = new ActiveXObject(msxml_progid[i]);
-					break;
+					xhr = new ActiveXObject(msxml_progid[i])
+					break
 				} catch (e2) {}
 			}
 		}
 		finally {
-			return xhr;
+			return xhr
 		}
 	}
 
@@ -214,27 +215,27 @@
 	 */
 	function httpSuccess(r) {
 		try {
-            //alert( location.protocol == "file:" );
-            // 如果得不到服务器状态，且我们在请求本地文件，设为成功
-            return !r.status && location.protocol == "file:" || 
-            // 所有 200 - 300 之间的状态码都表示成功
-            ( r.status >= 200 && r.status < 300 ) ||
-            // 文档未作修改设为成功
-            r.status == 304 ||
-            // Safari 在文档未修改时返回空状态
-            navigator.userAgent.indexOf("Safari") >= 0 && typeof r.status == "undefined";
-        }catch (e){}
-        // 若检查状态失败，就设置请求为失败
-        return false;
+      //alert( location.protocol == "file:" );
+      // 如果得不到服务器状态，且我们在请求本地文件，设为成功
+      return !r.status && location.protocol == "file:" || 
+      // 所有 200 - 300 之间的状态码都表示成功
+      ( r.status >= 200 && r.status < 300 ) ||
+      // 文档未作修改设为成功
+      r.status == 304 ||
+      // Safari 在文档未修改时返回空状态
+      navigator.userAgent.indexOf("Safari") >= 0 && typeof r.status == "undefined"
+    }	catch (e)	{}
+    // 若检查状态失败，就设置请求为失败
+    return false
 	}
 
-	function convertHttpData(r, type) {
+	function convertHttpData(xhr, type) {
 		
 		// 根据预期返回的数据类型对数据进行转化
-		return r.responseText;
+		return xhr.responseText
 	}
 
-	var cell = new Cell;
+	var cell = new Cell
 
-	return cell;
+	return cell
 });
