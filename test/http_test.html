@@ -25,7 +25,7 @@
           var json = cHttp.parseJSON(data)
           if(json.toString() !== ajaxData.toString()) { flag = false }
         }
-        var errorCB = function() { flag = true; console.log(0); assert(flag) }
+        var errorCB = function() { flag = true; assert(flag) }
         var timeoutCB = function(data) { result = data }
         var option = {
           type: 'GET',
@@ -42,9 +42,14 @@
       test('Function "loadStyle" Tests', function(){
         cHttp.loadStyle('test.css')
 
-        var fileName = document.styleSheets[0].href.replace(/.+/g, '')
-        console.log(fileName)
-        assert(true)
+        var path = new URL(document.styleSheets[0].href).pathname
+        assert(path.includes(path))
+      })
+
+      test('Function "loadScript" Tests', function(){
+        cHttp.loadScript('test.js')
+
+        assert(document.scripts[0].src.includes("test.js"))
       })
 
     })

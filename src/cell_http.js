@@ -92,7 +92,7 @@
 
 			xhr.send(options.data)
 		},
-
+		// 将请求数据拼接为查询字符串
 		buildAjaxParam : function(o) {
 			var encodeParams,
 					s = []
@@ -105,7 +105,7 @@
 
 			return encodeParams
 		},
-
+		// 把JavaScript对象序列化为JSON字符串
 		toJSON : function(o) {
 
 			// 如果存在原生JSON对象则直接调用
@@ -120,7 +120,7 @@
 			}
 			
 		},
-
+		// 把JSON字符串解析为JavaScript对象
 		parseJSON : function(data) {
 			var res = ''
 
@@ -140,7 +140,7 @@
 			}
 			return res
 		},
-
+		// 加载外部样式方法
 		loadStyle : function(url) {
 			var node = DOC.createElement("link")
 
@@ -148,9 +148,11 @@
 			node.href = url
 			head.insertBefore(node, head.firstChild)
 		},
-
+		// 加载外部脚本
 		loadScript : function(url, options) {
-			var option = {
+			if (typeof options === "undefined") { var options = {} }
+
+			var callbacks = {
 				onPending : options.onPending ||
 				function () {},
 				onError : options.onError ||
@@ -165,22 +167,22 @@
 			node[W3C ? "onload" : "onreadystatechange"] = function () {
 				if (W3C || /loaded|complete/i.test(node.readyState)) {
 					node.onreadystatechange = node.onload = null
-					option.onSuccess.call(this, node.src)
+					callbacks.onSuccess.call(this, node.src)
 				}
 			}
 
 			node.onerror = function () {
-				option.onError.call(this, node.src)
+				callbacks.onError.call(this, node.src)
 			}
 
 			node.src = url
 			head.insertBefore(node, head.firstChild)
-			option.onPending.call(this, node.src)
+			callbacks.onPending.call(this, node.src)
 		}
 	}
 
 	/**
-	 * YUI2的创建xhr对象的封装
+	 * 创建xhr对象的封装
 	 * @return {object XmlHttpRequest} XHR对象
 	 * @private function
 	 */
