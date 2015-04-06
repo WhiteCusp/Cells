@@ -59,18 +59,19 @@
 			},options.timeout)
 
 			var xhr = createXHR(),
-					hasContent = /POST/.test(options.type)
+					isGET = options.type === "GET"
 
+			// 构建发送数据的url参数
 			options.data = this.buildAjaxParam(options.data)
 
-			if (!hasContent) {
+			if (isGET) {
 				url += url.indexOf("?") == -1 ? ("?" + options.data) : ("&" + options.data)
 				delete options.data
 			}
 
 			xhr.open(options.type, url, options.asyn)
 
-			if (options.data && hasContent) {
+			if (options.data && !isGET) {
 				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
 			}
 			
@@ -93,17 +94,21 @@
 			xhr.send(options.data)
 		},
 		// 将请求数据拼接为查询字符串
-		buildAjaxParam : function(o) {
-			var encodeParams,
-					s = []
+		buildAjaxParam : function(data) {
+			var params = []
 
-			for ( key in o ) {
-				s[s.length] = encodeURIComponent(key) + "=" + encodeURIComponent(o[key])
+			for ( var p in data ) {
+				if(data[p] instanceof Array) {
+					var temp = p + '[]'
+          for(var i = 0; i < data[p].length; i++) {
+            params.push(encodeURIComponent(temp) + '=' + encodeURIComponent(data[p][i]));
+          }
+        } else {
+          params.push(encodeURIComponent(p) + '=' + encodeURIComponent(data[p]));
+        }
 			}
 
-			encodeParams = s.join('&')
-
-			return encodeParams
+			return params.join('&')
 		},
 		// 把JavaScript对象序列化为JSON字符串
 		toJSON : function(o) {

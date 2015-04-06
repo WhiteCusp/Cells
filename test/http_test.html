@@ -28,10 +28,11 @@
         var errorCB = function() { flag = true; assert(flag) }
         var timeoutCB = function(data) { result = data }
         var option = {
-          type: 'GET',
+          type: 'POST',
           onSuccess: successCB,
           onError: errorCB,
-          dataType: 'application/json'
+          dataType: 'application/json',
+          data: {name:"Herry", location:[0,1,2,3,4]}
         }
 
         cHttp.ajax('data.php', option)
