@@ -138,6 +138,40 @@
       })
     },
 
+    // 添加类名
+    addClass : function(elem, className) {
+      if (elem.nodeType === 1 && typeof className === "string" && className) {
+        var cur = elem.className ? ( " " + elem.className + " " ) : " "
+        var classList = className.split(" ")
+        var i = 0, tempClass
+
+        while ( (tempClass = classList[i++]) ) {
+          if (cur.indexOf(" " + tempClass + " ") === -1) {
+            cur +=  tempClass + " "
+          }
+        }
+
+        elem.className = this.trim(cur)
+      }
+    },
+
+    // 移除类名
+    removeClass : function(elem, className) {
+      if (elem.nodeType === 1 && typeof className === "string" && className) {
+        var cur = elem.className ? ( " " + elem.className + " " ) : " "
+        var classList = className.split(" ")
+        var i = 0, tempClass
+
+        while ( (tempClass = classList[i++]) ) {
+          if (cur.indexOf(" " + tempClass + " ") !== -1) {
+            cur = cur.replace(" " + tempClass + " ", " ")
+          }
+        }
+
+        elem.className = this.trim(cur)
+      }
+    },
+
     // 设备检测
     platform : function() {
       var ua = navigator.userAgent
