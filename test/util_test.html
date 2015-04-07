@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Array Test Page</title>
+  <link rel="stylesheet" href="./css/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <script src="../src/cell_util.js"></script>
+  <script src="./js/mocha.js"></script>
+  <script src="./js/chai.js"></script>
+  <script>
+    mocha.ui('tdd')
+    var assert = chai.assert
+
+    var cUtil = cell['util']
+
+
+    suite('Module Util Tests', function(){
+
+      test('Function "addClass" Tests', function(){
+        var flag1, flag2, flag3, flag4, flag5
+
+        flag1 = flag2 = flag3 = flag4 = flag5 = false
+
+        // flag1
+        document.body.className = ""
+
+        cUtil.addClass(document.body, "test")
+
+        if (document.body.className === "test") { flag1 = true }
+
+        // flag2
+        document.body.className = "util cell"
+        
+        cUtil.addClass(document.body, "test")
+
+        if (document.body.className === "util cell test") { flag2 = true }
+
+        // flag3
+        document.body.className = "util test"
+        
+        cUtil.addClass(document.body, "test")
+
+        if (document.body.className === "util test") { flag3 = true }
+
+        // flag4
+        document.body.className = ""
+        
+        cUtil.addClass(document.body, "util test")
+
+        if (document.body.className === "util test") { flag4 = true }
+
+        // flag5
+        document.body.className = "util test"
+        
+        cUtil.addClass(document.body, "cell test")
+
+        if (document.body.className === "util test cell") { flag5 = true }
+
+        assert(flag1 && flag2 && flag3 && flag4 && flag5)
+
+        document.body.className = ""
+      })
+
+      test('Function "removeClass" Tests', function(){
+        var flag1, flag2, flag3, flag4, flag5
+
+        flag1 = flag2 = flag3 = flag4 = flag5 = false
+
+        // flag1
+        document.body.className = ""
+
+        cUtil.removeClass(document.body, "test")
+
+        if (document.body.className === "") { flag1 = true }
+
+        // flag2
+        document.body.className = "test"
+        
+        cUtil.removeClass(document.body, "test")
+
+        if (document.body.className === "") { flag2 = true }
+
+        // flag3
+        document.body.className = "util test"
+        
+        cUtil.removeClass(document.body, "test")
+
+        if (document.body.className === "util") { flag3 = true }
+
+        // flag4
+        document.body.className = "util test"
+        
+        cUtil.removeClass(document.body, "util test")
+
+        if (document.body.className === "") { flag4 = true }
+
+        // flag5
+        document.body.className = "util test"
+        
+        cUtil.removeClass(document.body, "cell test")
+
+        if (document.body.className === "util") { flag5 = true }
+
+        assert(flag1 && flag2 && flag3 && flag4 && flag5)
+
+        document.body.className = ""
+      })
+
+    })
+
+  </script>
+  <script>mocha.run()</script>
+</body>
+</html>
