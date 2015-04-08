@@ -5,8 +5,13 @@
   <title>Array Test Page</title>
   <link rel="stylesheet" href="./css/mocha.css">
 </head>
-<body>
+<body style="padding-bottom:1000px;">
   <div id="mocha"></div>
+  <div id="outer" style="position:absolute;top:100px;left:200px;">
+    <div id="middle" style="width:50px;height:100px;margin:100px 0 0 50px;">
+      <div id="inner" style="margin-left:50px;"></div>
+    </div>
+  </div>
   <script src="../src/cell_util.js"></script>
   <script src="./js/mocha.js"></script>
   <script src="./js/chai.js"></script>
@@ -18,6 +23,28 @@
 
 
     suite('Module Util Tests', function(){
+
+      test('Function "scrollTop" Tests', function(){
+        window.scrollTo(0, 200)
+
+        assert(cUtil.scrollTop() === 200)
+
+        window.scrollTo(0, 0)
+      })
+
+      test('Function "getOffset" Tests', function(){
+        var pos = cUtil.getOffset(document.getElementById('inner'))
+        assert( pos.top === 200 && pos.left === 300 )
+      })
+
+      test('Function "extend" Tests', function(){
+        var objA = {name: 'Lily', age: 18},
+            objB = {location: 'beijing'}
+
+        cUtil.extend(objA, objB)
+
+        assert( objA.location === 'beijing' )
+      })
 
       test('Function "addClass" Tests', function(){
         var flag1, flag2, flag3, flag4, flag5
