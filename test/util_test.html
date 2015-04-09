@@ -46,6 +46,32 @@
         assert( objA.location === 'beijing' )
       })
 
+      test('Function "css" Tests', function(){
+        var innerBox = document.getElementById('inner')
+
+        cUtil.css(innerBox, {fontSize: '16px', opacity:'0.5'})
+        assert(innerBox.style.fontSize === '16px' && innerBox.style.opacity ==='0.5')
+      })
+
+      test('Function "trim" Tests', function(){
+        var str = ' a b   c   '
+
+        assert( cUtil.trim(str) === 'a b   c' )
+      })
+
+      test('Function "bind" Tests', function(){
+        var objA = {
+          name: 'Join',
+          say: function(age) { return this.name + '-' + age }
+        }
+
+        var objB = { name: 'Lily' }
+
+        var say = cUtil.bind(objA.say, objB, 18)
+        
+        assert( say() === 'Lily-18' )
+      })
+
       test('Function "addClass" Tests', function(){
         var flag1, flag2, flag3, flag4, flag5
 
