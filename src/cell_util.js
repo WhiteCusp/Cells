@@ -90,7 +90,7 @@
 
     // 为对象设置行内样式
     css: function(obj, style) {
-      var type = Object.prototype.toString.call(obj)
+      var type = Object.prototype.toString.call(style)
       if(type !== '[object Object]') {return}
       for(var attr in style) {
         obj.style[attr] = style[attr]
