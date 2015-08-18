@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Array Test Page</title>
+  <link rel="stylesheet" href="./css/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <script src="../src/cell_http.js"></script>
+  <script src="./js/mocha.js"></script>
+  <script src="./js/chai.js"></script>
+  <script>
+    mocha.ui('tdd')
+    var assert = chai.assert
+
+    var cHttp = cell['http']
+
+    suite('Module http Tests', function(){
+
+      test('Function "ajax" Tests', function(){
+        var ajaxData = [1,2,3,4,5],
+            flag = true
+        var successCB = function(data) {
+          var json = cHttp.parseJSON(data)
+          if(json.toString() !== ajaxData.toString()) { flag = false }
+        }
+        var errorCB = function() { flag = true; assert(flag) }
+        var timeoutCB = function(data) { result = data }
+        var option = {
+          type: 'POST',
+          onSuccess: successCB,
+          onError: errorCB,
+          dataType: 'application/json',
+          data: {name:"Herry", location:[0,1,2,3,4]}
+        }
+
+        cHttp.ajax('data.php', option)
+        flag = false
+        cHttp.ajax('data_error.php', option)
+      })
+
+      test('Function "loadStyle" Tests', function(){
+        cHttp.loadStyle('test.css')
+
+        var path = new URL(document.styleSheets[0].href).pathname
+        assert(path.includes(path))
+      })
+
+      test('Function "loadScript" Tests', function(){
+        cHttp.loadScript('test.js')
+
+        assert(document.scripts[0].src.includes("test.js"))
+      })
+
+    })
+
+  </script>
+  <script>mocha.run()</script>
+</body>
+</html>

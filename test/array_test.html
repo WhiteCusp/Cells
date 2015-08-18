@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Array Test Page</title>
+  <link rel="stylesheet" href="./css/mocha.css">
+</head>
+<body>
+  <div id="mocha"></div>
+  <script src="../src/cell_array.js"></script>
+  <script src="./js/mocha.js"></script>
+  <script src="./js/chai.js"></script>
+  <script>
+    mocha.ui('tdd')
+    var assert = chai.assert
+
+    var cArray = cell['array']
+
+    suite('Module array Tests', function(){
+      test('Function "merge" Tests', function(){
+        var arr1 = [3,2,1],
+            arr2 = [4,6,5]
+
+        cArray.merge(arr1, arr2)
+
+        assert(arr1.toString() === [3,2,1,4,6,5].toString())
+      })
+
+      test('Function "unique" Tests', function(){
+        var arr = [3,2,1,8,4,4,15,1,33]
+
+        assert( cArray.unique(arr).toString() === "3,2,1,8,4,15,33" )
+      })
+
+      test('Function "min" Tests', function(){
+        var arr = [3,2,1,8,4,4,15,1,33]
+
+        assert( cArray.min(arr) === 1 )
+      })
+
+      test('Function "max" Tests', function(){
+        var arr = [3,2,1,8,4,4,15,1,33]
+
+        assert( cArray.max(arr) === 33 )
+      })
+
+      test('Function "randomItem" Tests', function(){
+        var arr = [3,2,1,8,4,4,15,1,33]
+
+        var randomValue = cArray.randomItem(arr)
+
+        assert( cArray.indexOf(arr, randomValue) !== -1 )
+      })
+
+      test('Function "indexOf" Tests', function(){
+        var arr = [3,2,1,8,6,4,15,1,33]
+
+        assert(cArray.indexOf(arr, 15) === 6 && cArray.indexOf(arr, 80) === -1)
+      })
+
+      test('Function "removeAt" Tests', function(){
+        var arr = [3,2,1,8,6,4,15,1,33]
+
+        cArray.removeAt(arr, 4)
+
+        assert(arr.toString() === "3,2,1,6,4,15,1,33")
+      })
+
+      test('Function "remove" Tests', function(){
+        var arr = [3,2,1,8,6,4,15,1,33]
+
+        cArray.remove(arr, 1)
+
+        assert(arr.toString() === "3,2,8,6,4,15,33")
+      })
+
+      test('Function "clean" Tests', function(){
+        var arr = [3,2,undefined,8,6,'',15,null,33]
+
+        assert(cArray.clean(arr).toString() === "3,2,8,6,15,33")
+      })
+
+      test('Function "shuffle" Tests', function(){
+        var arr = [3,2,1,8,6,4,15,1,33]
+
+        assert(cArray.shuffle(arr).toString() !== "3,2,1,8,6,4,15,1,33")
+      })
+
+    })
+  </script>
+  <script>mocha.run();</script>
+</body>
+</html>
