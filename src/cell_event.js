@@ -24,6 +24,7 @@
         for (var i = 0; i < eleLength; i++) {
           this.on(ele[i], evTypes, cb)
         }
+        return
       }
 
 			if (evTypes.indexOf(' ') !== -1) {
@@ -33,13 +34,15 @@
 				for (var i = 0; i < len; i++) {
 					this.on(ele, eventList[i], cb)
 				}
+        return
 			}
 
       if (isDomEvent(ele, evTypes)) {
         this.addEventListener(ele, evTypes, cb)
       } else {
-				this._listeners[evTypes] = this._listeners[evTypes] || [];
-				this._listeners[evTypes].push(cb);
+				this._listeners[evTypes] = this._listeners[evTypes] || []
+				this._listeners[evTypes].push(cb)
+        return
 			}
 
 		},
@@ -51,6 +54,7 @@
         for (var i = 0; i < eleLength; i++) {
           this.off(ele[i], evTypes, cb)
         }
+        return
       }
 
 			if (evTypes.indexOf(' ') !== -1) {
@@ -60,6 +64,7 @@
         for (var i = 0; i < len; i++) {
           this.off(ele, eventList[i], cb)
         }
+        return
       }
 
       if (isDomEvent(ele, evTypes)) {
@@ -72,6 +77,7 @@
 						listeners[n] === cb && listeners.splice(n,1);
 					}
 				}
+        return
 			}
 		},
     // ÊÂ¼þ´¥·¢
