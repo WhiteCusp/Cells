@@ -35,10 +35,25 @@
         })()
       }
     },
-
     // 返回文档的顶部滚动高度
     scrollTop: function() {
+      // [IE,ff] document.documentElement.scrollTop
+      // [chrome] document.body.scrollTop
       return document.documentElement.scrollTop || document.body.scrollTop
+    },
+    // 获取视窗大小
+    getViewportSize: function(){
+      return {
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight
+      }
+    },
+    // 获取文档大小
+    getPageSize: function(){
+      return {
+        width: document.documentElement.scrollWidth,
+        height: document.documentElement.scrollHeight
+      }
     },
 
     // 返回元素相对于文档的偏移值
