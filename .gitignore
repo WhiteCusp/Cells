@@ -215,3 +215,9 @@ pip-log.txt
 .mr.developer.cfg
 /mycells.js
 /node_modules
+
+#############
+## nodejs
+#############
+
+node_modules/
